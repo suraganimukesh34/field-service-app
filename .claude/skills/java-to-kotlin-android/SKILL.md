@@ -1,8 +1,8 @@
 ---
 name: java-to-kotlin-android
-description: "Converts Java Android code to Kotlin the way this codebase has already done it, using patterns mined from its past Java-to-Kotlin migration commits. Covers: constructors, null safety, properties and getters, collections, data classes, interfaces, lambdas and anonymous classes, operators, static members, android views. Use when asked to migrate, convert or port a Java class, file or module to Kotlin in an Android MVVM project."
+description: "Converts Java Android code to Kotlin the way this codebase has already done it, using patterns mined from its past Java-to-Kotlin migration commits. Covers: constructors, null safety, properties and getters, collections, data classes, interfaces, lambdas and anonymous classes, operators, android views. Use when asked to migrate, convert or port a Java class, file or module to Kotlin in an Android MVVM project."
 metadata:
-  version: "1"
+  version: "2"
   generated-at: "2026-10-22"
   source-pairs: "17"
   source-commits: "17"
@@ -10,7 +10,7 @@ metadata:
 
 # Java to Kotlin migration rules (Android, MVVM)
 
-Version 1, generated 2026-10-22 from 17 converted files across 17 migration commits in this repository's history.
+Version 2, generated 2026-10-22 from 17 converted files across 17 migration commits in this repository's history.
 
 ## How to apply these rules
 
@@ -23,7 +23,7 @@ Version 1, generated 2026-10-22 from 17 converted files across 17 migration comm
 ### Constructors
 
 - **Constructors that only assign fields (this.x = x) become primary-constructor val/var parameters.**
-  Seen in 9 of 17 converted files (medium confidence: established pattern).
+  Seen in 9 of 17 converted files (medium confidence: established pattern). Accepted in 1 reviewed draft(s).
 
   ```java
   public Logger(String scope) {
@@ -37,7 +37,7 @@ Version 1, generated 2026-10-22 from 17 converted files across 17 migration comm
 ### Null safety
 
 - **Values that can be null in Java (null returns, null checks) are declared with nullable Kotlin types (T?).**
-  Seen in 8 of 17 converted files (medium confidence: established pattern).
+  Seen in 8 of 17 converted files (medium confidence: established pattern). Accepted in 1 reviewed draft(s).
 
   ```java
   return null;
@@ -59,7 +59,7 @@ Version 1, generated 2026-10-22 from 17 converted files across 17 migration comm
 ### Properties and getters
 
 - **getFoo() calls become property access (.foo).**
-  Seen in 8 of 17 converted files (medium confidence: established pattern).
+  Seen in 8 of 17 converted files (medium confidence: established pattern). Accepted in 1 reviewed draft(s).
 
   ```java
   products.put(product.getId(), product);
@@ -84,7 +84,7 @@ Version 1, generated 2026-10-22 from 17 converted files across 17 migration comm
 ### Collections
 
 - **new ArrayList<>() / HashMap<>() become mutableListOf() / mutableMapOf().**
-  Seen in 4 of 17 converted files (medium confidence: established pattern).
+  Seen in 4 of 17 converted files (medium confidence: established pattern). Accepted in 1 reviewed draft(s).
 
   ```java
   private final List<User> users = new ArrayList<>();
@@ -94,7 +94,7 @@ Version 1, generated 2026-10-22 from 17 converted files across 17 migration comm
   ```
 
 - **for-each loops that build or test collections become map/filter/any/all/count operations.**
-  Seen in 4 of 17 converted files (medium confidence: established pattern).
+  Seen in 4 of 17 converted files (medium confidence: established pattern). Accepted in 1 reviewed draft(s).
 
   ```java
   public double total() {
@@ -214,28 +214,13 @@ Version 1, generated 2026-10-22 from 17 converted files across 17 migration comm
 ### Operators
 
 - **a.equals(b) becomes a == b.**
-  Seen in 2 of 17 converted files (low confidence: seen only a few times; apply when the construct matches and mention it in the PR).
+  Seen in 2 of 17 converted files (low confidence: seen only a few times; apply when the construct matches and mention it in the PR). Accepted in 1 reviewed draft(s).
 
   ```java
   if (user.getId().equals(id)) {
   ```
   ```kotlin
   fun findById(id: String): User? = users.firstOrNull { it.id == id }
-  ```
-
-### Static members
-
-- **static members move into a companion object (or top-level declarations).**
-  Seen in 2 of 17 converted files (low confidence: seen only a few times; apply when the construct matches and mention it in the PR).
-
-  ```java
-  private static final String TAG = "Fixture";
-  ```
-  ```kotlin
-  companion object {
-      private const val TAG = "Fixture"
-      fun forScope(scope: String): Logger = Logger(scope)
-  }
   ```
 
 ### Android views
@@ -250,6 +235,12 @@ Version 1, generated 2026-10-22 from 17 converted files across 17 migration comm
   binding = ActivityMainBinding.inflate(layoutInflater)
   ```
 
+
+## Unresolved: needs human review
+
+These conflict with another source or were rejected in review. Do not apply them until a person resolves them.
+
+- static members move into a companion object (or top-level declarations). (needs review: rejected in 1 reviewed draft(s), accepted in 0: utility classes should be objects)
 
 ## Not covered by this version
 
