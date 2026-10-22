@@ -1,8 +1,8 @@
-package com.acme.field.customers;
+package com.acme.field.customers
 
-public interface ResultCallback<T> {
+fun interface ResultCallback<T> {
 
-    void onSuccess(T result);
+    fun onSuccess(result: T)
 
-    void onError(Throwable error);
+    fun onError(error: Throwable)
 }
