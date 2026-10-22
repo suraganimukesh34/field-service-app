@@ -1,31 +1,24 @@
-package com.acme.field.customers;
+package com.acme.field.customers
 
-public class CustomerFormatter {
+object CustomerFormatter {
 
-    public static final String UNKNOWN = "Unknown customer";
-    private static final int MAX_NAME_LENGTH = 28;
+    const val UNKNOWN = "Unknown customer"
+    private const val MAX_NAME_LENGTH = 28
 
-    private CustomerFormatter() {
+    @JvmStatic
+    fun displayName(customer: Customer?): String {
+        val name = customer?.name?.trim() ?: return UNKNOWN
+        return if (name.length > MAX_NAME_LENGTH) name.substring(0, MAX_NAME_LENGTH - 1) + "…" else name
     }
 
-    public static String displayName(Customer customer) {
-        if (customer == null || customer.getName() == null) {
-            return UNKNOWN;
-        }
-        String name = customer.getName().trim();
-        return name.length() > MAX_NAME_LENGTH ? name.substring(0, MAX_NAME_LENGTH - 1) + "…" : name;
+    @JvmStatic
+    fun contactLine(customer: Customer): String {
+        val line = StringBuilder()
+        line.append(customer.email)
+        customer.phone?.let { line.append(" | ").append(it) }
+        return line.toString()
     }
 
-    public static String contactLine(Customer customer) {
-        StringBuilder line = new StringBuilder();
-        line.append(customer.getEmail());
-        if (customer.getPhone() != null) {
-            line.append(" | ").append(customer.getPhone());
-        }
-        return line.toString();
-    }
-
-    public static String statusLabel(Customer customer) {
-        return customer.isActive() ? "Active" : "Inactive";
-    }
+    @JvmStatic
+    fun statusLabel(customer: Customer): String = if (customer.isActive) "Active" else "Inactive"
 }
