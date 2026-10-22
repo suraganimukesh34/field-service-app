@@ -1,0 +1,2 @@
+rootProject.name = 'field-service-app'
+include ':customers', ':scheduling', ':parts', ':invoicing'
