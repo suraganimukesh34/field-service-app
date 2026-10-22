@@ -1,53 +1,43 @@
-package com.acme.field.customers;
+package com.acme.field.customers
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-import java.util.List;
+class CustomerViewModel(private val repository: CustomerRepository) : ViewModel() {
 
-public class CustomerViewModel extends ViewModel {
+    private val _customers = MutableLiveData<List<Customer>>()
+    private val _error = MutableLiveData<String?>()
+    private var query: String? = ""
 
-    private final CustomerRepository repository;
-    private final MutableLiveData<List<Customer>> customers = new MutableLiveData<>();
-    private final MutableLiveData<String> error = new MutableLiveData<>();
-    private String query = "";
+    val customers: LiveData<List<Customer>> get() = _customers
+    val error: LiveData<String?> get() = _error
 
-    public CustomerViewModel(CustomerRepository repository) {
-        this.repository = repository;
-        refresh();
+    init {
+        refresh()
     }
 
-    public LiveData<List<Customer>> getCustomers() {
-        return customers;
+    // Explicit function (not a property setter) so Java keeps setQuery(String) with no new getQuery().
+    fun setQuery(query: String?) {
+        this.query = query
+        refresh()
     }
 
-    public LiveData<String> getError() {
-        return error;
+    fun refresh() {
+        val found = CustomerFilter.search(repository.all(), query)
+        CustomerFilter.sortByName(found)
+        _customers.value = found
     }
 
-    public void setQuery(String query) {
-        this.query = query;
-        refresh();
-    }
-
-    public void refresh() {
-        List<Customer> found = CustomerFilter.search(repository.all(), query);
-        CustomerFilter.sortByName(found);
-        customers.setValue(found);
-    }
-
-    public void load(String id) {
-        repository.findById(id, new ResultCallback<Customer>() {
-            @Override
-            public void onSuccess(Customer result) {
-                refresh();
+    fun load(id: String) {
+        repository.findById(id, object : ResultCallback<Customer> {
+            override fun onSuccess(result: Customer) {
+                refresh()
             }
 
-            @Override
-            public void onError(Throwable throwable) {
-                error.postValue(throwable.getMessage());
+            override fun onError(error: Throwable) {
+                _error.postValue(error.message)
             }
-        });
+        })
     }
 }
