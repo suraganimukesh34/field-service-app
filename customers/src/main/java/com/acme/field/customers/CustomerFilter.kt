@@ -1,44 +1,23 @@
-package com.acme.field.customers;
+package com.acme.field.customers
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+object CustomerFilter {
 
-public final class CustomerFilter {
-
-    private CustomerFilter() {
-    }
-
-    public static List<Customer> search(List<Customer> customers, String query) {
-        List<Customer> result = new ArrayList<>();
-        String needle = query == null ? "" : query.trim().toLowerCase();
-        for (Customer customer : customers) {
-            if (needle.isEmpty()
-                    || customer.getName().toLowerCase().contains(needle)
-                    || (customer.getEmail() != null && customer.getEmail().toLowerCase().contains(needle))) {
-                result.add(customer);
-            }
+    @JvmStatic
+    fun search(customers: List<Customer>, query: String?): MutableList<Customer> {
+        val needle = query?.trim()?.lowercase() ?: ""
+        return customers.filterTo(mutableListOf()) { customer ->
+            needle.isEmpty() ||
+                customer.name!!.lowercase().contains(needle) ||
+                customer.email?.lowercase()?.contains(needle) == true
         }
-        return result;
     }
 
-    public static List<Customer> activeOnly(List<Customer> customers) {
-        List<Customer> result = new ArrayList<>();
-        for (Customer customer : customers) {
-            if (customer.isActive()) {
-                result.add(customer);
-            }
-        }
-        return result;
-    }
+    @JvmStatic
+    fun activeOnly(customers: List<Customer>): MutableList<Customer> =
+        customers.filterTo(mutableListOf()) { it.isActive }
 
-    public static void sortByName(List<Customer> customers) {
-        Collections.sort(customers, new Comparator<Customer>() {
-            @Override
-            public int compare(Customer a, Customer b) {
-                return a.getName().compareToIgnoreCase(b.getName());
-            }
-        });
+    @JvmStatic
+    fun sortByName(customers: MutableList<Customer>) {
+        customers.sortWith { a, b -> a.name!!.compareTo(b.name!!, ignoreCase = true) }
     }
 }
